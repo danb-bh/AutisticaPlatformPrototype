@@ -37,16 +37,9 @@ class DeploymentPipelineStack(core.Stack):
             synth_action=p.SimpleSynthAction(
                 source_artifact=source_artifact,
                 cloud_assembly_artifact=cloud_assembly_artifact,
-                install_command='cd aws/deployment_pipeline '
-                                '&& npm install -g aws-cdk '
-                                '&& pip install -r requirements.txt',
-                # build_command='',
+                install_command='cd aws/deployment_pipeline'
+                                ' && npm install -g aws-cdk'
+                                ' && pip install -r requirements.txt',
                 synth_command='cdk synth',
-                # environment_variables={
-                #     'AWS_DEFAULT_REGION': '',
-                #     'IMAGE_REPO_NAME': ecr_repo.repository_name,
-                #     'IMAGE_TAG': 'latest',
-                #     'AWS_ACCOUNT_ID': '',
-                # }
             )
         )
