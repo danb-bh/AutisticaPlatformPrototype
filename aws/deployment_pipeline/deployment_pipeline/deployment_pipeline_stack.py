@@ -29,5 +29,9 @@ class DeploymentPipelineStack(core.Stack):
                 owner='danb-bh',
                 repo='AutisticaPlatformPrototype',
                 branch='danb'
+            ),
+            synth_action=p.SimpleSynthAction.standard_npm_synth(
+                source_artifact=source_artifact,
+                cloud_assembly_artifact=cloud_assembly_artifact
             )
         )
