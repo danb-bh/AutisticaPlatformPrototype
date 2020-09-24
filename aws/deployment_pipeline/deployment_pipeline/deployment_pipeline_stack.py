@@ -1,7 +1,8 @@
 from aws_cdk import (core,
                      pipelines as p,
                      aws_codepipeline as cp,
-                     aws_codepipeline_actions as cpa)
+                     aws_codepipeline_actions as cpa,
+                     aws_ecr as ecr)
 
 
 def create_name(suffix: str) -> str:
@@ -12,6 +13,8 @@ class DeploymentPipelineStack(core.Stack):
 
     def __init__(self, scope: core.Construct, id: str, **kwargs) -> None:
         super().__init__(scope, id, **kwargs)
+
+        ecr_repo = ecr.Repository(self, create_name('ecr'))
 
         source_artifact = cp.Artifact()
         cloud_assembly_artifact = cp.Artifact()
@@ -28,10 +31,22 @@ class DeploymentPipelineStack(core.Stack):
                 oauth_token=core.SecretValue.secrets_manager('github-token-for-account-danb-bh'),
                 owner='danb-bh',
                 repo='AutisticaPlatformPrototype',
-                branch='danb'
+                branch='danb',
+                trigger=cpa.GitHubTrigger.WEBHOOK
             ),
-            synth_action=p.SimpleSynthAction.standard_npm_synth(
+            synth_action=p.SimpleSynthAction(
                 source_artifact=source_artifact,
-                cloud_assembly_artifact=cloud_assembly_artifact
+                cloud_assembly_artifact=cloud_assembly_artifact,
+                install_command='cd aws/deployment_pipeline '
+                                '&& npm install -g aws-cdk '
+                                '&& pip install -r requirements.txt',
+                # build_command='',
+                synth_command='cdk synth',
+                # environment_variables={
+                #     'AWS_DEFAULT_REGION': '',
+                #     'IMAGE_REPO_NAME': ecr_repo.repository_name,
+                #     'IMAGE_TAG': 'latest',
+                #     'AWS_ACCOUNT_ID': '',
+                # }
             )
         )
