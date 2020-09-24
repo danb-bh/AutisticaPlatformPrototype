@@ -1,4 +1,4 @@
-from aws_cdk import (core as c,
+from aws_cdk import (core,
                      pipelines as p,
                      aws_codepipeline as cp,
                      aws_codepipeline_actions as cpa)
@@ -25,7 +25,7 @@ class DeploymentPipelineStack(core.Stack):
             source_action=cpa.GitHubSourceAction(
                 action_name=create_name('github'),
                 output=source_artifact,
-                oauth_token=c.SecretValue.secrets_manager('github-token-for-account-danb-bh'),
+                oauth_token=core.SecretValue.secrets_manager('github-token-for-account-danb-bh'),
                 owner='danb-bh',
                 repo='AutisticaPlatformPrototype',
                 branch='danb'
